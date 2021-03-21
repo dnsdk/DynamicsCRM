@@ -1,0 +1,459 @@
+js
+
+//配置aspx
+https://jingyan.baidu.com/album/154b46315030b128ca8f41f3.html?picindex=5
+http://blog.csdn.net/yinjingjing198808/article/details/7185453
+-------------------------------------
+var array = ["字段名",...];
+//清空数据
+clearFieldsVal(array);
+-------------------------------------
+
+//获取字段的值
+var userNum = Xrm.Page.getAttribute("").getValue();
+
+//去掉guid的括号
+var Guidid = userNum[0].id.replace("{","").replace("}","");
+
+//赋值
+Xrm.Page.getAttribute("").setValue("");
+
+//字段显示和隐藏
+Xrm.Page.getControl("").setDisabled(false/true);
+
+//更改字段显示名称
+Xrm.Page.getControl("").setLabel("");
+
+//获取当前的字段名称  需要方法添加context
+var client = context.getEventSource().getName();
+
+--------------------------------------------
+//清除错误
+Xrm.Page.getControl(client).clearNotification();
+
+//提示错误信息
+Xrm.Page.getControl(client).setNotification("错误信息");
+--------------------------------------------
+
+//获取当前登录用户名
+var userId = Xrm.Page.context.getUserId().replace("{","").replace("}","");
+
+tabs:选项卡
+
+//得到选项卡
+Xrm.Page.ui.tabs.get("tab_2");
+getDisplayState()，setDisplayState() 选项卡是否展开： 返回string   expanded(展开)，collapsed（折叠）
+getName() 返回选项卡的名称，
+getParent() 返回Xrm.Page.ui对象
+getLabel()，setLabel 返回设置选项卡的标签
+setFocus() 将焦点跳至该选项卡  设置焦点 前后 不能有弹窗
+getVisible()，setVisible() 获取设置选项卡是否隐藏，返回bool setVisible(false)-- 隐藏
+
+
+
+ViewPort 是包含窗体数据页面的区域。它对应于窗体的主体，不包括页面区域上的导航、标题、页脚或窗体助理。使用 getViewPortHeight 和 getViewPortWidth 方法获取 ViewPort 的当前大小。
+Xrm.Page.ui.getViewPortWidth() 像素为单位
+
+
+Xrm.Page.ui.getFormType()
+0
+ 尚未定义
+                                           控件的是否只读，true是只读
+1                                          控件的显示隐藏，true是显示
+ 创建                                      按钮的显示隐藏，true是显示
+ 
+2
+ 更新
+ 
+3
+ 只读
+ 
+4
+ 已禁用
+ 
+5
+ 快速创建（已弃用）
+ 
+6
+ 批量编辑
+ 
+11
+ 读取优化（已弃用）
+
+
+--------------------!!!!!       Xrm.Page.ui 控制方法，（客户端引用）       !!!!!----------------------
+
+
+ 
+Xrm.Page.getControl("new_name").setDisabled(true);设置指定控件不可用（上锁），显示/隐藏，是否可编辑都要先拿到控件
+getDisabled()--得到是否上了锁
+Xrm.Page.getControl("new_name").getName()//得到空间的名称，字段名
+
+Xrm.Page.ui.tabs("代理商确认").setVisible(false);--选项卡隐藏
+Xrm.Page.ui.tabs.get("tab_2").sections.get("sections_3").setVisible(false);--指定某个选项卡中的某个节隐藏
+
+Xrm.Page.ui.close() 关闭窗体
+
+Xrm.Page.getControl(arg).refresh()  子网格刷新
+
+Xrm.Page.getControl(arg).addOnKeyPress([function reference]) removeOnKeyPress([function reference])移除  fireOnKeyPress() 类似模仿点击    控件键盘弹起时触发 参数：方法的引用
+
+Xrm.Page.getControl(arg).getLabel()/setLable() --得到或设置控件的标签
+
+Xrm.Page.ui.process //折叠展开，显示隐藏
+Xrm.Page.ui.process.getDisplayState()/setDisplayState();expanded展开collapsed折叠
+Xrm.Page.ui.process.getVisible(true/false);显示/隐
+
+Xrm.Page.data.process
+
+--------------------!!!!!   Xrm.page.data实体属性  !!!!!----------------------
+
+Xrm.Page.getAttribute(arg).setRequiredLevel(requirementLevel) //设置窗体上的字段是否需要（参数：字符串）
+
+none --不是必需要的
+
+required--必须的
+
+recommended--建议的
+
+//OptionSet 方法
+例子：var option2 =[
+{ text: "专营店", value: 1 },
+{ text: "专卖店", value: 2 }
+];
+//添加
+function addOptions(option)
+{
+    Xrm.Page.getControl("new_type_").clearOptions();//清空选项集
+    for (var i = 0; i < option.length; i++) {
+        Xrm.Page.getControl("new_type_").addOption(option[i]);//添加选项集
+    }
+}
+//移除（参：选项的值）
+Xrm.Page.getControl(arg).removeOption(number) 
+
+getInitialValue()
+//当打开窗体时，返回表示 OptionSet 或 Boolean 属性值设置的值。
+Xrm.Page.getAttribute(arg).getInitialValue()--都返回数字
+
+//得到选项集集合
+Xrm.Page.getAttribute(arg).getOptions()[0].text/.value----文本/值（数字）
+
+//得到值或显示文本
+Xrm.Page.getAttribute(arg).getOption(value)---参数：显示文本或值
+
+//得到当前选中的一个选项集对象
+Xrm.Page.getAttribute(arg).getSelectedOption().text()/.value--文本/值
+
+//得到当前选中的一个选项集的文本（为空的话 返回 null）null不能toString()
+Xrm.Page.getAttribute(arg).getText()
+
+//得到字段的类型（返回字符串）
+Xrm.Page.getAttribute(arg).getAttributeType()
+boolean 
+
+datetime 
+
+decimal 
+
+double 
+
+integer 
+
+lookup 
+
+memo 
+
+money 
+
+optionset 
+
+string
+
+//返回代表属性  格式  类型的字符串值。
+Xrm.Page.getAttribute(arg).getFormat()
+
+date 
+
+datetime 
+
+duration 
+
+email 
+
+language 
+
+none 
+
+phone 
+
+text 
+
+textarea 
+
+tickersymbol 
+
+timezone 
+
+url 
+
+//指定属性是否未保存更改true表示是
+Xrm.Page.getAttribute(arg).getIsDirty()
+
+//返回一个布尔值，指示查找是否表示 partylist 查找。Partylist 查找允许设置多条记录
+Xrm.Page.getAttribute(arg).getIsPartyList()
+
+//返回一个数值，指示字符串或备忘录属性的最大长度。(邮箱没有此方法)
+Xrm.Page.getAttribute(arg).getMaxLength()
+
+//返回表示属性的逻辑名称的字符串。
+Xrm.Page.getAttribute(arg).getName()
+
+//返回 Xrm.Page.data.entity 对象，该对象为所有属性的父对象。
+Xrm.Page.getAttribute(arg).getParent()
+
+//复杂
+//若用户可以创建、读取或更新属性的数据值，则返回带有与对应权限指示的三个布尔属性的对象。当为了特定属性字段级安全修改用户权限时，使用该函数
+Xrm.Page.getAttribute(arg).getUserPrivilege()--返回对象
+对象的三个bool属性
+canRead 
+
+canUpdate 
+
+canCreate 
+
+//返回数值指示属性的最大允许值或最小值。
+Xrm.Page.getAttribute(arg).getMax()/getMin()--属性类型：货币、十进制、整数、偶数双精度
+
+//返回小数点右侧允许的数字位数。
+Xrm.Page.getAttribute(arg).getPrecision()--属性类型：货币、十进制、偶数双精度和整数
+
+//设置在保存记录时是否提交属性中的数据
+Xrm.Page.getAttribute(arg).setSubmitMode()/getSubmitMode()
+always:在保存后，始终发送数据。
+
+never:已保存后，数据从不发送。在使用此时，不能编辑属性表单的字段。
+
+dirty:默认行为。更改保存时，发送数据。
+
+//查找字段的方法和属性
+ 事件：（注意：调用方法时将 执行上下文（客户端引用） 传递为第一个参数）
+
+     使用 PreSearch 事件来控制当用户开始搜索记录，控件使用当前窗体数据所显示的结果。
+
+//当用户将显示查找的结果时，可使用此方法基于当前值应用对查找所做的更改/移除方法。
+  addPreSearch(方法)/removePreSearch(方法)
+例子（查找时，过滤查找的数据）：加载时调用
+ function OnLoadHandler() {
+Xrm.Page.getAttribute("new_account").setValue(null);
+    Xrm.Page.getControl("new_account").addPreSearch(function () {
+        addLookupFilter();
+    });
+}
+function addLookupFilter() {
+    var singleLineText = Xrm.Page.getAttribute("new_singlelinetext").getValue();
+    var fetchXml = "";
+    if (singleLineText != null) {
+        fetchXml = "<filter type='and'><condition attribute='name' operator='like' value='" + singleLineText  + "%' /></filter>";
+    }
+    else {
+        fetchXml = "<filter type='and'><condition attribute='name' operator='null' /></filter>";
+    }
+    Xrm.Page.getControl("new_account").addCustomFilter(fetchXml);
+}
+
+方法：
+//返回默认查找对话视图的 ID 值
+getDefaultView()
+Xrm.Page.getControl(arg).getDefaultView()
+//设置查找的视图
+Xrm.Page.getControl(arg).setDefaultView(viewGuid)
+用于将筛选器添加到查找控件中显示的结果。每个筛选器将作为“AND”条件与任何以前添加的筛选器合并。
+
+Xrm.Page.getControl(arg).addCustomFilter(filter, entityLogicaName)
+filter 类型：字符串：要应用的 fetchXml 筛选器元素。例如：
+<filter type="and">
+ <condition attribute="address1_city" operator="eq" value="Redmond" />
+</filter>
+entityLogicaName 类型：字符串：（可选）如果设置为此类型，则筛选器仅应用于该实体类型。否则，将应用于所有返回的实体类型。
+
+//得到流程阶段应用
+Xrm.Page.data.process
+
+
+//设置错误
+Xrm.Page.getControl(client).setNotification("错误信息");
+Xrm.Page.getControl(client).clearNotification();
+
+--------------------!!!!!   Xrm.page.data.entity   !!!!!----------------------
+
+方法：
+ 
+getDataXml() 
+
+返回表示当保存记录时将被发送到服务器的 XML 的 字符串 。只有字段中已更改的数据被设置到服务器
+例子：Xrm.Page.data.entity.getDataXml()  返回的是："<account><name>Contoso</name><accountnumber>55555</accountnumber><telephone2>425 555-1234</telephone2></account>"
+实体 account 字段name accountnumber telephone2 这三个字段修改了
+
+getEntityName()
+
+//返回当前操作的实体的名称
+Xrm.Page.data.entity.getEntityName()
+
+//返回当前记录的Guid值
+getId()
+
+//返回一个指示是否已修改窗体中任何字段的 布尔值。
+getIsDirty()
+
+addOnSave()  removeOnSave()  
+
+function a()
+{
+  Xrm.Page.data.entity.addOnSave([function reference])
+}
+
+将a()方法放入onload事件中
+当保存记录之前时触发，添加要调用的函数。
+
+getPrimaryAttributeValue()
+
+获取实体的主要属性值的字符串（第一个字段值new_name）
+
+Xrm.Page.data.entity.save( null | "saveandclose" |"saveandnew" )
+
+保存，保存并关闭，保存并新建（快速创建窗体不适用）
+
+
+禁用页面所有控件：
+Xrm.Page.ui.controls.forEach(function (control, index) {
+control.setDisabled(true);
+});
+
+
+
+
+--------------------!!!!!   Xrm.Page.context   !!!!!---------------------- 
+
+
+提供的方法可用于检索组织、用户或在查询字符串中传递到窗体的参数的特定信息
+
+取消保存
+
+调用时将上下文传入方法中
+function a(eContext)
+{
+   eContext.getEventArgs().preventDefault();
+}
+
+
+返回用于访问应用程序的基本 URL
+Xrm.Page.context.getClientUrl()
+
+返回表示当前 Microsoft Office Outlook 主题（由用户选择）的字符串。
+Xrm.Page.context.getCurrentTheme()
+
+返回是否对组织启用自动保存。
+Xrm.Page.context.getIsAutoSaveEnabled()
+
+返回表示组织的基本语言的 LCID 值。
+Xrm.Page.context.getOrgLcid() //1033表示英语
+
+返回组织名称的唯一文本值
+Xrm.Page.context.getOrgUniqueName()
+
+返回表示查询字符串参数（该参数被传递到页面）的键值对的词典对象。
+Xrm.Page.context.getQueryStringParameters() --返回的是对象
+
+返回本地时与协调世界时 (UTC) 之间的时差。
+Xrm.Page.context.getTimeZoneOffsetMinutes() --返回数字（分钟数中国是480分钟）
+
+返回当前用户 SystemUser.Id 值的 GUID
+getUserId()
+
+返回表示用户选作首选语言的 Microsoft Dynamics CRM 语言包 的 LCID 值。
+getUserLcid() 
+
+2052---中华人民共和国（默认）
+3076--香港
+5124--澳门
+1033--英语（默认）
+1041--是日本
+
+返回当前用户的名称
+getUserName();
+
+返回表示每个安全角色 GUID 值的字符串数组，其中安全角色与用户关联或与用户相关的任何团队关联。返回数组
+getUserRoles();
+
+将组织名称预置到指定路径。
+prependOrgName(sPath)
+
+
+ Xrm.Utility.openEntityForm("email", d.data.toString());
+打开一个记录（实体名，记录id）
+
+//流程字段前缀
+header_process_
+
+//获取服务器时间
+function getServerDate(){
+    var xhr = null;
+    if(window.XMLHttpRequest){
+      xhr = new window.XMLHttpRequest();
+    }else{ // ie
+      xhr = new ActiveObject("Microsoft")
+    }
+
+    xhr.open("GET","/",false)//false不可变
+    xhr.send(null);
+    var date = xhr.getResponseHeader("Date");
+    return new Date(date);
+}
+Xrm.page.context.client.getClient();//获取请求的是移动或pc端
+Web/Outlook/Mobile  --- https://msdn.microsoft.com/en-us/library/gg334511.aspx#BKMK_getclient
+//邮箱配置
+http://luoyong0201.blog.163.com/blog/static/1129305201310188256202/
+
+//操作表单上多条数据
+//function ChangeDevStatus(status) {
+	var selectedRows = crmGrid.control.getRecordsFromInnerGrid(true);
+	var obj = new Object();
+	obj.new_status = { "Value": status };
+	var nFailed = 0, nSuccess = 0;
+
+	for (var i = 0; i < selectedRows.length; ++i) {
+		JsCommon.updateRecord(selectedRows[i][0], obj, "new_buildingSet",
+			 function (data, textStatus, XmlHttpRequest) { nSuccess += 1; },
+			 function (data, textStatus, XmlHttpRequest) { nFailed += 1; },
+			 false);
+	}
+
+	crmGrid.control.refresh();
+	alert("操作完成. 成功个数: " + nSuccess + ", 失败个数: " + nFailed);
+}
+
+//html 不同html传输数据（html5）
+
+// 隐藏2016的 业务流程 回退  设置当前阶段为活动 上一阶段
+function PCHidePreviousStageButton() {
+//function HideElement(elementId) {
+// var id = "#" + elementId
+// var elem = $(id);
+// $(id).hide();
+// $(id).html("");
+//}
+var iframe = window.top.document.getElementById("contentIFrame0");
+var doc = iframe.contentDocument || iframe.contentWindow.document;
+var selectedStage = doc.getElementsByClassName("ms-crm-Form-StandaloneSection");
+if (selectedStage == null || selectedStage == undefined || selectedStage.length <= 0) {
+window.top.location.reload(false);
+}
+var back = doc.getElementById("stageBackActionContainer");
+var active = doc.getElementById("stageSetActiveActionContainer");
+back.style.display = 'none';
+active.style.display = 'none';
+//设置当前阶段为活动↑
+//HideElement("stageBackActionContainer");
+//HideElement("stageSetActiveActionContainer");
+}
