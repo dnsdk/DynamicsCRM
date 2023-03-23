@@ -457,3 +457,7 @@ active.style.display = 'none';
 //HideElement("stageBackActionContainer");
 //HideElement("stageSetActiveActionContainer");
 }
+
+//查询实体对应的ObjectTypeCode
+SELECT * From EntityView
+ORDER BY ObjectTypeCode
